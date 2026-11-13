@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Мои игры</title>
-<meta name="description" content="Личная коллекция игр в Steam: что пройдено, во что играю и что ждёт своей очереди.">
+<title>Список игр</title>
+<meta name="description" content="Список игр для выбора на следующий стрим. Нажмите «Копировать», чтобы скопировать название игры.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,9 +14,9 @@
 <div class="bg" aria-hidden="true"></div>
 
 <header class="header wrap">
-  <p class="eyebrow">Коллекция</p>
-  <h1>Мои игры</h1>
-  <p class="sub">Личный список игр в Steam — что пройдено, во что играю и что ждёт своей очереди.</p>
+  <p class="eyebrow">Steam</p>
+  <h1>Список игр</h1>
+  <p class="sub">Список, из которого можно выбрать игру на следующий стрим. Нажав кнопку «Копировать», скопируется название игры.</p>
   <dl class="stats">
     <div class="stat">
       <dt>Игр</dt>
@@ -26,44 +26,35 @@
       <dt>Часов</dt>
       <dd id="stat-hours">0</dd>
     </div>
-    <div class="stat">
-      <dt>Играю</dt>
-      <dd id="stat-playing">0</dd>
-    </div>
-    <div class="stat">
-      <dt>В планах</dt>
-      <dd id="stat-backlog">0</dd>
-    </div>
   </dl>
 </header>
 
 <main class="wrap">
-  <section class="controls" aria-label="Поиск и фильтры">
+  <section class="controls" aria-label="Поиск и сортировка">
     <div class="search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
       <input id="search" type="search" placeholder="Поиск по названию или жанру" autocomplete="off" aria-label="Поиск по названию или жанру">
     </div>
 
-    <div class="chips" id="chips" role="group" aria-label="Фильтр по статусу"></div>
-
     <label class="sort">
-      <span>Сортировка</span>
-      <select id="sort">
-        <option value="title">По названию</option>
-        <option value="hours">По часам</option>
-        <option value="rating">По оценке</option>
-      </select>
+      <span class="sort-label">Сортировка</span>
+      <span class="select-wrap">
+        <select id="sort">
+          <option value="title">По названию</option>
+          <option value="hours">По часам</option>
+        </select>
+      </span>
     </label>
   </section>
 
   <p class="count" id="count"></p>
 
   <section class="grid" id="grid" aria-live="polite"></section>
-  <p class="empty" id="empty" hidden>Ничего не найдено. Попробуй изменить запрос или фильтр.</p>
+  <p class="empty" id="empty" hidden>Ничего не найдено. Попробуйте изменить запрос.</p>
 </main>
 
 <footer class="footer wrap">
-  <span>Личная коллекция</span>
+  <span>Список игр</span>
   <span class="dot" aria-hidden="true"></span>
   <a href="https://store.steampowered.com/" target="_blank" rel="noopener">Steam</a>
 </footer>

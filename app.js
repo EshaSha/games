@@ -1,30 +1,18 @@
-const STATUS_LABELS = {
-  playing: "Играю",
-  played: "Играл(а)",
-  completed: "Пройдено",
-  backlog: "В планах",
-  dropped: "Брошено"
-};
-
 const numberFormat = new Intl.NumberFormat("ru-RU");
 
 const state = {
   query: "",
-  status: "all",
   sort: "title"
 };
 
 const els = {
   grid: document.getElementById("grid"),
-  chips: document.getElementById("chips"),
   search: document.getElementById("search"),
   sort: document.getElementById("sort"),
   count: document.getElementById("count"),
   empty: document.getElementById("empty"),
   total: document.getElementById("stat-total"),
-  hours: document.getElementById("stat-hours"),
-  playing: document.getElementById("stat-playing"),
-  backlog: document.getElementById("stat-backlog")
+  hours: document.getElementById("stat-hours")
 };
 
 function posterUrl(appid) {
@@ -41,10 +29,6 @@ function storeUrl(appid) {
 
 function gameHours(game) {
   return Number.isFinite(game.hours) ? game.hours : 0;
-}
-
-function gameRating(game) {
-  return Number.isFinite(game.rating) ? Math.max(0, Math.min(5, game.rating)) : 0;
 }
 
 function matchesQuery(game) {
@@ -65,67 +49,50 @@ function compareGames(a, b) {
     return gameHours(b) - gameHours(a) || byTitle(a, b);
   }
 
-  if (state.sort === "rating") {
-    return gameRating(b) - gameRating(a) || byTitle(a, b);
-  }
-
   return byTitle(a, b);
 }
 
-function buildChips() {
-  const entries = [["all", "Все", GAMES.length]];
-
-  for (const [key, label] of Object.entries(STATUS_LABELS)) {
-    entries.push([key, label, GAMES.filter((game) => game.status === key).length]);
-  }
-
-  for (const [key, label, count] of entries) {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "chip";
-    chip.dataset.status = key;
-    chip.setAttribute("aria-pressed", String(key === state.status));
-
-    const name = document.createElement("span");
-    name.textContent = label;
-
-    const amount = document.createElement("span");
-    amount.className = "chip-count";
-    amount.textContent = String(count);
-
-    chip.append(name, amount);
-    chip.addEventListener("click", () => {
-      state.status = key;
-      syncChips();
-      render();
-    });
-
-    els.chips.append(chip);
-  }
-}
-
-function syncChips() {
-  for (const chip of els.chips.querySelectorAll(".chip")) {
-    chip.setAttribute("aria-pressed", String(chip.dataset.status === state.status));
-  }
-}
-
-function makeStars(rating) {
-  const wrap = document.createElement("span");
-  wrap.className = "stars";
-  wrap.setAttribute("role", "img");
-  wrap.setAttribute("aria-label", `Оценка ${rating} из 5`);
-
-  for (let i = 0; i < 5; i += 1) {
-    const star = document.createElement("span");
-    star.textContent = "★";
-    if (i >= rating) {
-      star.className = "off";
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
     }
-    wrap.append(star);
-  }
 
-  return wrap;
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.top = "-1000px";
+    document.body.append(area);
+    area.select();
+    const copied = document.execCommand("copy");
+    area.remove();
+    return copied;
+  } catch (error) {
+    return false;
+  }
+}
+
+function makeCopyButton(title) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "copy";
+  button.textContent = "Копировать";
+
+  button.addEventListener("click", async () => {
+    const copied = await copyText(title);
+    button.textContent = copied ? "Скопировано" : "Не удалось";
+    button.classList.toggle("is-done", copied);
+
+    window.clearTimeout(button.resetTimer);
+    button.resetTimer = window.setTimeout(() => {
+      button.textContent = "Копировать";
+      button.classList.remove("is-done");
+    }, 1600);
+  });
+
+  return button;
 }
 
 function makeCard(game, index) {
@@ -133,51 +100,43 @@ function makeCard(game, index) {
   card.className = "card";
   card.style.setProperty("--i", String(index));
 
-  const poster = document.createElement("div");
-  poster.className = "poster";
+  const link = document.createElement("a");
+  link.className = "poster-link";
+  link.href = storeUrl(game.appid);
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.setAttribute("aria-label", `Открыть ${game.title} в Steam`);
 
-  const fallback = document.createElement("div");
+  const fallback = document.createElement("span");
   fallback.className = "poster-fallback";
   fallback.textContent = String(game.title).slice(0, 1).toUpperCase();
-  poster.append(fallback);
 
-  if (game.appid) {
-    const img = document.createElement("img");
-    img.src = posterUrl(game.appid);
-    img.alt = `Обложка игры ${game.title}`;
-    img.loading = "lazy";
-    img.decoding = "async";
-    img.addEventListener("error", () => {
-      if (img.dataset.fallback) {
-        img.remove();
-      } else {
-        img.dataset.fallback = "1";
-        img.src = headerUrl(game.appid);
-      }
-    });
-    poster.append(img);
-  }
+  const img = document.createElement("img");
+  img.src = posterUrl(game.appid);
+  img.alt = `Обложка игры ${game.title}`;
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.addEventListener("error", () => {
+    if (img.dataset.fallback) {
+      img.remove();
+    } else {
+      img.dataset.fallback = "1";
+      img.src = headerUrl(game.appid);
+    }
+  });
 
-  const statusKey = STATUS_LABELS[game.status] ? game.status : "backlog";
-  const badge = document.createElement("span");
-  badge.className = `badge badge--${statusKey}`;
-  badge.textContent = STATUS_LABELS[statusKey];
-  poster.append(badge);
+  link.append(fallback, img);
 
   const body = document.createElement("div");
   body.className = "card-body";
 
   const title = document.createElement("h2");
-  if (game.appid) {
-    const link = document.createElement("a");
-    link.href = storeUrl(game.appid);
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = game.title;
-    title.append(link);
-  } else {
-    title.textContent = game.title;
-  }
+  const titleLink = document.createElement("a");
+  titleLink.href = storeUrl(game.appid);
+  titleLink.target = "_blank";
+  titleLink.rel = "noopener";
+  titleLink.textContent = game.title;
+  title.append(titleLink);
 
   const genres = document.createElement("p");
   genres.className = "genres";
@@ -194,10 +153,7 @@ function makeCard(game, index) {
   hours.className = "hours";
   hours.textContent = gameHours(game) > 0 ? `${numberFormat.format(gameHours(game))} ч` : "—";
 
-  if (gameRating(game) > 0) {
-    foot.append(makeStars(gameRating(game)));
-  }
-  foot.append(hours);
+  foot.append(hours, makeCopyButton(game.title));
 
   body.append(title);
   if (genres.textContent) {
@@ -207,34 +163,29 @@ function makeCard(game, index) {
     body.append(note);
   }
   body.append(foot);
-  card.append(poster, body);
+  card.append(link, body);
 
   return card;
 }
 
 function render() {
   const visible = GAMES
-    .filter((game) => state.status === "all" || game.status === state.status)
     .filter(matchesQuery)
     .sort(compareGames);
 
   els.grid.replaceChildren(...visible.map(makeCard));
   els.empty.hidden = visible.length > 0;
 
-  els.count.textContent = state.query || state.status !== "all"
+  els.count.textContent = state.query
     ? `Показано ${visible.length} из ${GAMES.length}`
-    : `Игр в коллекции: ${GAMES.length}`;
+    : `Игр в списке: ${GAMES.length}`;
 }
 
 function renderStats() {
   const hours = GAMES.reduce((sum, game) => sum + gameHours(game), 0);
-  const playing = GAMES.filter((game) => game.status === "playing").length;
-  const backlog = GAMES.filter((game) => game.status === "backlog").length;
 
   els.total.textContent = String(GAMES.length);
   els.hours.textContent = numberFormat.format(hours);
-  els.playing.textContent = String(playing);
-  els.backlog.textContent = String(backlog);
 }
 
 els.search.addEventListener("input", (event) => {
@@ -247,6 +198,5 @@ els.sort.addEventListener("change", (event) => {
   render();
 });
 
-buildChips();
 renderStats();
 render();
