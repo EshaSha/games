@@ -568,17 +568,6 @@ const GAMES = [
     "note": ""
   },
   {
-    "appid": 3416070,
-    "title": "Ropuka's Idle Island",
-    "hours": 2,
-    "genres": [
-      "Казуальная",
-      "Инди",
-      "Симулятор"
-    ],
-    "note": ""
-  },
-  {
     "appid": 225640,
     "title": "Sacred 2 Gold",
     "hours": 0,
