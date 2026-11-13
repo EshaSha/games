@@ -335,6 +335,10 @@ h1 {
   color: var(--playing);
 }
 
+.badge--played {
+  color: #a5b4fc;
+}
+
 .badge--completed {
   color: var(--completed);
 }

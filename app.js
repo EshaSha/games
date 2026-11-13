@@ -1,5 +1,6 @@
 const STATUS_LABELS = {
   playing: "Играю",
+  played: "Играл(а)",
   completed: "Пройдено",
   backlog: "В планах",
   dropped: "Брошено"
@@ -22,7 +23,8 @@ const els = {
   empty: document.getElementById("empty"),
   total: document.getElementById("stat-total"),
   hours: document.getElementById("stat-hours"),
-  done: document.getElementById("stat-done")
+  playing: document.getElementById("stat-playing"),
+  backlog: document.getElementById("stat-backlog")
 };
 
 function posterUrl(appid) {
@@ -179,7 +181,7 @@ function makeCard(game, index) {
 
   const genres = document.createElement("p");
   genres.className = "genres";
-  genres.textContent = (game.genres || []).join(" · ") || "Без жанра";
+  genres.textContent = (game.genres || []).join(" · ");
 
   const note = document.createElement("p");
   note.className = "note";
@@ -192,8 +194,19 @@ function makeCard(game, index) {
   hours.className = "hours";
   hours.textContent = gameHours(game) > 0 ? `${numberFormat.format(gameHours(game))} ч` : "—";
 
-  foot.append(makeStars(gameRating(game)), hours);
-  body.append(title, genres, note, foot);
+  if (gameRating(game) > 0) {
+    foot.append(makeStars(gameRating(game)));
+  }
+  foot.append(hours);
+
+  body.append(title);
+  if (genres.textContent) {
+    body.append(genres);
+  }
+  if (note.textContent) {
+    body.append(note);
+  }
+  body.append(foot);
   card.append(poster, body);
 
   return card;
@@ -215,11 +228,13 @@ function render() {
 
 function renderStats() {
   const hours = GAMES.reduce((sum, game) => sum + gameHours(game), 0);
-  const done = GAMES.filter((game) => game.status === "completed").length;
+  const playing = GAMES.filter((game) => game.status === "playing").length;
+  const backlog = GAMES.filter((game) => game.status === "backlog").length;
 
   els.total.textContent = String(GAMES.length);
   els.hours.textContent = numberFormat.format(hours);
-  els.done.textContent = String(done);
+  els.playing.textContent = String(playing);
+  els.backlog.textContent = String(backlog);
 }
 
 els.search.addEventListener("input", (event) => {
