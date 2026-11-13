@@ -172,17 +172,6 @@ const GAMES = [
     "note": ""
   },
   {
-    "appid": 230230,
-    "title": "Divinity: Original Sin (Classic)",
-    "hours": 0,
-    "genres": [
-      "Приключения",
-      "Инди",
-      "RPG"
-    ],
-    "note": ""
-  },
-  {
     "appid": 435150,
     "title": "Divinity: Original Sin 2",
     "hours": 7,
@@ -391,18 +380,8 @@ const GAMES = [
     "note": ""
   },
   {
-    "appid": 1426210,
-    "title": "It Takes Two",
-    "hours": 10,
-    "genres": [
-      "Экшен",
-      "Приключения"
-    ],
-    "note": ""
-  },
-  {
     "appid": 2621150,
-    "title": "Lizard Survivors: Battle for Hyperborea",
+    "title": "Древние Ящеры Против Русов: Битва за Гиперборею",
     "hours": 0,
     "genres": [
       "Экшен",
@@ -413,7 +392,7 @@ const GAMES = [
   },
   {
     "appid": 2532550,
-    "title": "LIZARDS MUST DIE",
+    "title": "РУСЫ ПРОТИВ ЯЩЕРОВ",
     "hours": 1,
     "genres": [
       "Экшен",
@@ -867,17 +846,6 @@ const GAMES = [
   {
     "appid": 228380,
     "title": "Wreckfest",
-    "hours": 0,
-    "genres": [
-      "Экшен",
-      "Инди",
-      "Гонки"
-    ],
-    "note": ""
-  },
-  {
-    "appid": 272860,
-    "title": "Wreckfest Throw-A-Santa + Sneak Peek 2.0",
     "hours": 0,
     "genres": [
       "Экшен",
