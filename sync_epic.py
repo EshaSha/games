@@ -12,6 +12,8 @@ ROOT = Path(__file__).resolve().parent
 SKIP_CATEGORIES = {"software", "digitalextras"}
 SKIP_TITLE_PATTERNS = (r"\bdemo\b", r"\bbeta\b", r"\bpublic testing\b", r"\bplaytest\b")
 SKIP_DEV = "epic dev test account"
+EXCLUDE_TITLES = {"Dauntless", "Spellbreak"}
+MANUAL_URLS = {"Fortnite": "https://store.epicgames.com/p/fortnite"}
 EDITION_WORDS = {
     "enhanced", "redux", "definitive", "complete", "gold", "deluxe",
     "ultimate", "remastered", "goty", "edition", "game", "of", "the", "year",
@@ -141,7 +143,7 @@ def main():
     for item in items:
         meta = item.get("metadata") or {}
         title = (item.get("app_title") or meta.get("title") or "").strip()
-        if not title:
+        if not title or title in EXCLUDE_TITLES:
             continue
 
         categories = {c.get("path") for c in meta.get("categories", [])}
@@ -162,13 +164,17 @@ def main():
         if not cover:
             continue
 
-        appid = find_steam_appid(title) or manual_appid(title)
-        if appid:
-            url = STEAM_APP.format(appid)
-            genres = steam_genres(appid)
-        else:
-            url = "https://store.epicgames.com/ru/search?q=" + urllib.parse.quote(title)
+        if title in MANUAL_URLS:
+            url = MANUAL_URLS[title]
             genres = []
+        else:
+            appid = find_steam_appid(title) or manual_appid(title)
+            if appid:
+                url = STEAM_APP.format(appid)
+                genres = steam_genres(appid)
+            else:
+                url = "https://store.epicgames.com/ru/search?q=" + urllib.parse.quote(title)
+                genres = []
 
         rows.append({
             "title": title,

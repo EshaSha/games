@@ -233,13 +233,6 @@ const EPIC_GAMES = [
     "source": "epic"
   },
   {
-    "title": "Dauntless",
-    "cover": "https://cdn1.epicgames.com/item/jackal/EGS_LIVEFORTHEHUNT_PhoenixLabs_S2_1200x1600-c3cef99deb57ca1b8cc50a33b3fe7fc7",
-    "url": "https://store.epicgames.com/ru/search?q=Dauntless",
-    "genres": [],
-    "source": "epic"
-  },
-  {
     "title": "Dead by Daylight",
     "cover": "https://cdn1.epicgames.com/spt-assets/2b2299be8ae84d679d4dc57c55af1510/dead-by-daylight-1fplv.jpg",
     "url": "https://store.steampowered.com/app/381210/",
@@ -311,7 +304,7 @@ const EPIC_GAMES = [
   {
     "title": "Fortnite",
     "cover": "https://cdn1.epicgames.com/item/fn/FNBR_43-00_MSEE_KeyArt_FN_EGS_Launcher_Blade_1200x1600_1200x1600-6c88e2d63466451ba341e67e08c33dbc",
-    "url": "https://store.epicgames.com/ru/search?q=Fortnite",
+    "url": "https://store.epicgames.com/p/fortnite",
     "genres": [],
     "source": "epic"
   },
@@ -361,11 +354,8 @@ const EPIC_GAMES = [
   {
     "title": "Hue",
     "cover": "https://cdn1.epicgames.com/cd88d9edc5a748cfa138e467205adcac/item/Diesel_productv2_hue_home_EGS_Hue_FiddleSticks_S4-510x680-bcdd99a2911633e169813a658111b8058a7bde85-510x680-b9fcf99f08b9fa00a3837798f68f3922.jpg",
-    "url": "https://store.steampowered.com/app/383270/",
-    "genres": [
-      "Приключения",
-      "Инди"
-    ],
+    "url": "https://store.epicgames.com/ru/search?q=Hue",
+    "genres": [],
     "source": "epic"
   },
   {
@@ -645,13 +635,6 @@ const EPIC_GAMES = [
       "Приключения",
       "Казуальная"
     ],
-    "source": "epic"
-  },
-  {
-    "title": "Spellbreak",
-    "cover": "https://cdn1.epicgames.com/salesEvent/salesEvent/14cfd60d-7423-4326-82f3-5dc699e88776_1200x1600-eb640310bbedc2e3d7ddfb90b40020ee",
-    "url": "https://store.epicgames.com/ru/search?q=Spellbreak",
-    "genres": [],
     "source": "epic"
   },
   {
