@@ -1,3 +1,4 @@
+const SVG_NS = "http://www.w3.org/2000/svg";
 const numberFormat = new Intl.NumberFormat("ru-RU");
 const ALL_GAMES = [...GAMES, ...EPIC_GAMES];
 
@@ -132,6 +133,15 @@ function makeCard(game, index) {
     });
     link.append(img);
   }
+
+  const sourceBadge = document.createElementNS(SVG_NS, "svg");
+  sourceBadge.setAttribute("class", "source-badge");
+  sourceBadge.setAttribute("aria-hidden", "true");
+
+  const sourceUse = document.createElementNS(SVG_NS, "use");
+  sourceUse.setAttribute("href", game.source === "epic" ? "#logo-epic" : "#logo-steam");
+  sourceBadge.append(sourceUse);
+  link.append(sourceBadge);
 
   const body = document.createElement("div");
   body.className = "card-body";
