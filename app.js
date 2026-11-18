@@ -1,4 +1,5 @@
 const numberFormat = new Intl.NumberFormat("ru-RU");
+const ALL_GAMES = [...GAMES, ...EPIC_GAMES];
 
 const state = {
   query: "",
@@ -100,39 +101,44 @@ function makeCard(game, index) {
   card.className = "card";
   card.style.setProperty("--i", String(index));
 
+  const cover = game.cover || (game.appid ? posterUrl(game.appid) : "");
+  const storeHref = game.url || (game.appid ? storeUrl(game.appid) : "");
+
   const link = document.createElement("a");
   link.className = "poster-link";
-  link.href = storeUrl(game.appid);
+  link.href = storeHref;
   link.target = "_blank";
   link.rel = "noopener";
-  link.setAttribute("aria-label", `Открыть ${game.title} в Steam`);
+  link.setAttribute("aria-label", `Открыть ${game.title}`);
 
   const fallback = document.createElement("span");
   fallback.className = "poster-fallback";
   fallback.textContent = String(game.title).slice(0, 1).toUpperCase();
+  link.append(fallback);
 
-  const img = document.createElement("img");
-  img.src = posterUrl(game.appid);
-  img.alt = `Обложка игры ${game.title}`;
-  img.loading = "lazy";
-  img.decoding = "async";
-  img.addEventListener("error", () => {
-    if (img.dataset.fallback) {
-      img.remove();
-    } else {
-      img.dataset.fallback = "1";
-      img.src = headerUrl(game.appid);
-    }
-  });
-
-  link.append(fallback, img);
+  if (cover) {
+    const img = document.createElement("img");
+    img.src = cover;
+    img.alt = `Обложка игры ${game.title}`;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.addEventListener("error", () => {
+      if (game.appid && !img.dataset.fallback) {
+        img.dataset.fallback = "1";
+        img.src = headerUrl(game.appid);
+      } else {
+        img.remove();
+      }
+    });
+    link.append(img);
+  }
 
   const body = document.createElement("div");
   body.className = "card-body";
 
   const title = document.createElement("h2");
   const titleLink = document.createElement("a");
-  titleLink.href = storeUrl(game.appid);
+  titleLink.href = storeHref;
   titleLink.target = "_blank";
   titleLink.rel = "noopener";
   titleLink.textContent = game.title;
@@ -169,7 +175,7 @@ function makeCard(game, index) {
 }
 
 function render() {
-  const visible = GAMES
+  const visible = ALL_GAMES
     .filter(matchesQuery)
     .sort(compareGames);
 
@@ -177,14 +183,14 @@ function render() {
   els.empty.hidden = visible.length > 0;
 
   els.count.textContent = state.query
-    ? `Показано ${visible.length} из ${GAMES.length}`
-    : `Игр в списке: ${GAMES.length}`;
+    ? `Показано ${visible.length} из ${ALL_GAMES.length}`
+    : `Игр в списке: ${ALL_GAMES.length}`;
 }
 
 function renderStats() {
-  const hours = GAMES.reduce((sum, game) => sum + gameHours(game), 0);
+  const hours = ALL_GAMES.reduce((sum, game) => sum + gameHours(game), 0);
 
-  els.total.textContent = String(GAMES.length);
+  els.total.textContent = String(ALL_GAMES.length);
   els.hours.textContent = numberFormat.format(hours);
 }
 
