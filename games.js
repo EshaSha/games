@@ -4,10 +4,7 @@ const GAMES = [
     "title": ".hack//G.U. Last Recode",
     "hours": 0,
     "genres": [
-      "RPG",
-      "Экшен",
-      "Приключения",
-      "Инди"
+      "RPG"
     ],
     "note": ""
   },
@@ -16,7 +13,10 @@ const GAMES = [
     "title": "Avencast: Rise of the Mage",
     "hours": 0,
     "genres": [
-      "RPG"
+      "RPG",
+      "Экшен",
+      "Приключения",
+      "Инди"
     ],
     "note": ""
   },
